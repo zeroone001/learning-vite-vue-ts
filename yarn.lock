@@ -952,10 +952,10 @@ yallist@^4.0.0:
   resolved "https://npm-team.smzdm.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha1-m7knkNnA7/7GO+c1GeEaNQGaOnI=
 
-zdm-utils@^2.0.27:
-  version "2.0.27"
-  resolved "https://npm-team.smzdm.com/zdm-utils/-/zdm-utils-2.0.27.tgz#41b9eb3f8a5556064cf8b11cbeab746240e328cf"
-  integrity sha512-ExvN2mYebF3IjX0xLqfO4YY3RbrieJ5zyg8TzOAlR1RABTMHvhUih2kVaxgeJAzqGzL+dA69VEPuRdw05HViAQ==
+zdm-utils@^2.0.28-beta.0:
+  version "2.0.28-beta.0"
+  resolved "https://npm-team.smzdm.com/zdm-utils/-/zdm-utils-2.0.28-beta.0.tgz#547a46908cddeb847b8eb04f1a4d6734223aecc6"
+  integrity sha512-5LlHRvfgJsmQFSqbmp67B0Dpl++a95tQT4312hB9+nfqQ+six7WxuVHd+kwUKUFHMRAU1b8YywEXncyuH/MYdQ==
   dependencies:
     "@types/jsonp" "^0.2.0"
     axios "^0.21.0"

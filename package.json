@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "vue": "^3.2.25",
-    "zdm-utils": "^2.0.27"
+    "zdm-utils": "^2.0.28-beta.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.0.0",
