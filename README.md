@@ -104,13 +104,34 @@ Vue.createApp({
 <a v-on:[eventName]="doSomething"> ... </a>
 ```
 
-```ts
+### 修饰符
 
+```html
+<form v-on:submit.prevent="onSubmit">...</form>
 ```
 
-```ts
+### 防抖和节流
 
+```ts
+app.component('my-button', {
+    created() {
+        this.debouncedClick = _.debounce(this.click, 500)
+    },
+    unmounted () {
+        this.debouncedClick.cancel();
+    },
+    methods: {
+        click() {}
+    },
+    template: `
+        <button @click="debouncedClick">
+        Save
+        </button>
+    `
+})
 ```
+
+
 
 ## vue-loader
 
