@@ -6,6 +6,71 @@
 
 `yarn create vite <project-name> --template vue-ts`
 
+## 应用 & 组件实例
+
+创建一个应用实例
+
+```ts
+const app = Vue.createApp({});
+```
+
+注册全局组件
+
+```ts
+const app = Vue.createApp({})
+app.component('SearchInput', SearchInputComponent)
+app.directive('focus', FocusDirective)
+app.use(LocalePlugin)
+```
+
+根组件
+
+注意，mount是返回的根组件实例
+```ts
+const RootComponent = { 
+  /* 选项 */ 
+}
+const app = Vue.createApp(RootComponent)
+const vm = app.mount('#app')
+```
+组件实例 Property
+
+```ts
+const app = Vue.createApp({
+  data() {
+    return { count: 4 }
+  }
+})
+
+const vm = app.mount('#app')
+
+console.log(vm.count) // => 4
+```
+
+```ts
+
+```
+
+```ts
+
+```
+```ts
+
+```
+
+```ts
+
+```
+```ts
+
+```
+```ts
+
+```
+
+```ts
+
+```
 
 ## vue-loader
 

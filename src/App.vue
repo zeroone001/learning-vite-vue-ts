@@ -18,13 +18,11 @@ const changeName = () => {
 <template>
   <div>
     <img alt="Vue logo" src="./assets/logo.png" />
-      <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
-      <div id="counter">
-        Counter: {{ counter }}
-      </div>
-    <div @click="changeName">{{name}}</div>
+    <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+    <div id="counter">Counter: {{ counter }}</div>
+    <div @click="changeName">{{ name }}</div>
   </div>
-  
+  <div></div>
 </template>
 
 <style>
