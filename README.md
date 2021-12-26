@@ -23,7 +23,7 @@ app.directive('focus', FocusDirective)
 app.use(LocalePlugin)
 ```
 
-根组件
+### 根组件
 
 注意，mount是返回的根组件实例
 ```ts
@@ -33,7 +33,14 @@ const RootComponent = {
 const app = Vue.createApp(RootComponent)
 const vm = app.mount('#app')
 ```
-组件实例 Property
+
+### 组件实例 Property
+
+可以将用户定义的 property 添加到组件实例中，
+例如 methods，props，computed，inject 和 setup
+
+Vue 还通过组件实例暴露了一些内置 property，如 $attrs 和 $emit。
+这些 property 都有一个 $ 前缀，以避免与用户定义的 property 名冲突
 
 ```ts
 const app = Vue.createApp({
@@ -47,23 +54,56 @@ const vm = app.mount('#app')
 console.log(vm.count) // => 4
 ```
 
-```ts
+### 生命周期钩子
 
-```
+1. created 钩子可以用来在一个实例被创建之后执行代码;
+2. 不要在选项 property 或回调上使用箭头函数，比如 created: () => console.log(this.a) 或 vm.$watch('a', newValue => this.myMethod())
+3. 因为箭头函数是没有this的
 
-```ts
-
-```
-```ts
-
-```
 
 ```ts
-
+Vue.createApp({
+  data() {
+    return { count: 1}
+  },
+  created() {
+    // `this` 指向 vm 实例
+    console.log('count is: ' + this.count) // => "count is: 1"
+  }
+})
 ```
+
+## 模板语法
+
+### v-once
+
+```html
+<span v-once>这个将不会改变: {{ msg }}</span>
+```
+
+### v-html
+
+```html
+<p>Using v-html directive: <span v-html="rawHtml"></span></p>
+```
+
+### v-bind
+
+注意 isButtonDisabled 为空字符串，也会包含在内，建议直接TRUE，FALSE
+
 ```ts
-
+<button v-bind:disabled="isButtonDisabled">按钮</button>
 ```
+
+### 动态参数
+
+在这个示例中，当 eventName 的值为 "focus" 时，v-on:[eventName] 将等价于 v-on:focus
+
+```ts
+<a v-bind:[attributeName]="url"> ... </a>
+<a v-on:[eventName]="doSomething"> ... </a>
+```
+
 ```ts
 
 ```
