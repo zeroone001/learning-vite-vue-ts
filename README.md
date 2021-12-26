@@ -131,8 +131,96 @@ app.component('my-button', {
 })
 ```
 
+## 低级静态组件与 v-once
+
+在 Vue 中渲染纯 HTML 元素的速度非常快，但有时你可能有一个包含很多静态内容的组件。在这些情况下，可以通过向根元素添加 v-once 指令来确保只对其求值一次，然后进行缓存，如下所示：
 
 
+```ts
+app.component('terms-of-service', {
+  template: `
+    <div v-once>
+      <h1>Terms of Service</h1>
+      ... a lot of static content ...
+    </div>
+  `
+})
+```
+
+## 过渡 & 动画
+
+### 进入过渡 & 离开过渡
+
+Vue 提供了 transition 的封装组件，在下列情形中，可以给任何元素和组件添加进入/离开过渡
+
+条件渲染 (使用 v-if)
+条件展示 (使用 v-show)
+动态组件
+组件根节点
+
+```html
+<div id="demo">
+  <button @click="show = !show">
+    Toggle
+  </button>
+
+  <transition name="fade">
+    <p v-if="show">hello</p>
+  </transition>
+</div>
+
+```
+
+```scss
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+```
+
+### 过渡 class
+
+v-enter-from：定义进入过渡的开始状态。在元素被插入之前生效，在元素被插入之后的下一帧移除。
+
+v-enter-active：定义进入过渡生效时的状态。在整个进入过渡的阶段中应用，在元素被插入之前生效，在过渡/动画完成之后移除。这个类可以被用来定义进入过渡的过程时间，延迟和曲线函数。
+
+v-enter-to：定义进入过渡的结束状态。在元素被插入之后下一帧生效 (与此同时 v-enter-from 被移除)，在过渡/动画完成之后移除。
+
+v-leave-from：定义离开过渡的开始状态。在离开过渡被触发时立刻生效，下一帧被移除。
+
+v-leave-active：定义离开过渡生效时的状态。在整个离开过渡的阶段中应用，在离开过渡被触发时立刻生效，在过渡/动画完成之后移除。这个类可以被用来定义离开过渡的过程时间，延迟和曲线函数。
+
+v-leave-to：离开过渡的结束状态。在离开过渡被触发之后下一帧生效 (与此同时 v-leave-from 被移除)，在过渡/动画完成之后移除。
+
+### 状态过渡
+
+Vue 的过渡系统提供了非常多简单的方法来设置进入、离开和列表的动效，那么对于数据元素本身的动效呢？比如：
+
+数字和运算
+颜色的显示
+SVG 节点的位置
+元素的大小和其他的 property
+
+```ts
+
+```
+
+```ts
+
+```
+
+```ts
+
+```
+
+```ts
+
+```
 ## vue-loader
 
 当使用 vue-loader 时，*.vue 文件中的模板会在构建时预编译为 JavaScript，在最终的捆绑包中并不需要编译器，因此可以只使用运行时构建版本
