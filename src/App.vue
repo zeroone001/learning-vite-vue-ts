@@ -1,14 +1,30 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
+import { ref, onMounted } from 'vue';
 import HelloWorld from './components/HelloWorld.vue'
 
+let counter = ref(1);
+let name = ref('lys');
 
+onMounted(() => {
+  setInterval(() => {
+    counter.value += 1;
+  }, 1000)
+});
+const changeName = () => {
+  name.value = 'ad';
+}
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <div>
+    <img alt="Vue logo" src="./assets/logo.png" />
+      <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+      <div id="counter">
+        Counter: {{ counter }}
+      </div>
+    <div @click="changeName">{{name}}</div>
+  </div>
+  
 </template>
 
 <style>
