@@ -287,6 +287,152 @@ setup(props) {
 }
 ```
 
+### Context
+
+context 是一个普通 JavaScript 对象，暴露了其它可能在 setup 中有用的值
+
+不是响应式的
+
+```ts
+export default {
+  setup(props, context) {
+    // Attribute (非响应式对象，等同于 $attrs)
+    console.log(context.attrs)
+
+    // 插槽 (非响应式对象，等同于 $slots)
+    console.log(context.slots)
+
+    // 触发事件 (方法，等同于 $emit)
+    console.log(context.emit)
+
+    // 暴露公共 property (函数)
+    console.log(context.expose)
+  }
+}
+/* 完全可以解构 */
+// MyBook.vue
+export default {
+  setup(props, { attrs, slots, emit, expose }) {
+    ...
+  }
+}
+```
+
+执行 setup 时，组件实例尚未被创建。因此，你只能访问以下 property：
+
+props
+attrs
+slots
+emit
+
+```ts
+// MyBook.vue
+
+import { h, ref, reactive } from 'vue'
+
+export default {
+  setup() {
+    const readersNumber = ref(0)
+    const book = reactive({ title: 'Vue 3 Guide' })
+    // 请注意这里我们需要显式使用 ref 的 value
+    return () => h('div', [readersNumber.value, book.title])
+  }
+}
+```
+
+## expose
+
+这个 increment 方法现在将可以通过父组件的模板 ref 访问
+
+```ts
+import { h, ref } from 'vue'
+export default {
+  setup(props, { expose }) {
+    const count = ref(0)
+    const increment = () => ++count.value
+
+    expose({
+      increment
+    })
+
+    return () => h('div', count.value)
+  }
+}
+```
+
+## 生命周期钩子
+
+```ts
+// MyBook.vue
+
+export default {
+  setup() {
+    // mounted
+    onMounted(() => {
+      console.log('Component is mounted!')
+    })
+  }
+}
+```
+
+## Provide / Inject
+
+provide 函数允许你通过两个参数定义 property：
+
+name (<String> 类型)
+value
+
+inject 函数有两个参数：
+
+要 inject 的 property 的 name
+默认值 (可选)
+
+```html
+<!-- src/components/MyMap.vue -->
+<template>
+  <MyMarker />
+</template>
+
+<script>
+import { provide } from 'vue'
+import MyMarker from './MyMarker.vue'
+
+export default {
+  components: {
+    MyMarker
+  },
+  setup() {
+    /* Provide */
+    provide('location', 'North Pole')
+    provide('geolocation', {
+      longitude: 90,
+      latitude: 135
+    })
+  }
+}
+</script>
+<!-- inject -->
+<!-- src/components/MyMarker.vue -->
+<script>
+import { inject } from 'vue'
+
+export default {
+  setup() {
+    /* 第二个参数，是默认值 */
+    const userLocation = inject('location', 'The Universe')
+    const userGeolocation = inject('geolocation')
+
+    return {
+      userLocation,
+      userGeolocation
+    }
+  }
+}
+</script>
+```
+
+
+
 ## vue-loader
 
 当使用 vue-loader 时，*.vue 文件中的模板会在构建时预编译为 JavaScript，在最终的捆绑包中并不需要编译器，因此可以只使用运行时构建版本
