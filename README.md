@@ -431,7 +431,214 @@ export default {
 </script>
 ```
 
+### 响应性
 
+为了增加 provide 值和 inject 值之间的响应性，我们可以在 provide 值时使用 ref 或 reactive。
+
+有时我们需要在注入数据的组件内部更新 inject 的数据。在这种情况下，我们建议 provide 一个方法来负责改变响应式 property。
+
+```ts
+export default {
+  components: {
+    MyMarker
+  },
+  setup() {
+    const location = ref('North Pole')
+    const geolocation = reactive({
+      longitude: 90,
+      latitude: 135
+    })
+
+    provide('location', location)
+    provide('geolocation', geolocation)
+  }
+}
+```
+
+## 模板引用
+
+```html
+<template> 
+  <!-- 这里ref="root" -->
+  <div ref="root">This is a root element</div>
+</template>
+
+<script>
+  import { ref, onMounted } from 'vue'
+
+  export default {
+    setup() {
+      /* 重点 */
+      const root = ref(null)
+
+      onMounted(() => {
+        // DOM 元素将在初始渲染后分配给 ref
+        console.log(root.value) // <div>This is a root element</div>
+      })
+
+      return {
+        root
+      }
+    }
+  }
+</script>
+```
+
+### v-for 中的用法
+
+```html
+<template>
+  <div v-for="(item, i) in list" :ref="el => { if (el) divs[i] = el }">
+    {{ item }}
+  </div>
+</template>
+
+<script>
+  import { ref, reactive, onBeforeUpdate } from 'vue'
+
+  export default {
+    setup() {
+      const list = reactive([1, 2, 3])
+      /* 重点，通过这个拿到DOM结构 */
+      const divs = ref([])
+
+      // 确保在每次更新之前重置ref
+      onBeforeUpdate(() => {
+        divs.value = []
+      })
+
+      return {
+        list,
+        divs
+      }
+    }
+  }
+</script>
+```
+
+### 侦听模板引用
+
+这个挺好用的
+
+使用模板引用的侦听器应该用 flush: 'post' 选项来定义，这将在 DOM 更新后运行副作用，
+确保模板引用与 DOM 保持同步，并引用正确的元素
+
+```html
+<template>
+  <div ref="root">This is a root element</div>
+</template>
+
+<script>
+  import { ref, watchEffect } from 'vue'
+
+  export default {
+    setup() {
+      const root = ref(null)
+
+      watchEffect(() => {
+        // 这个副作用在 DOM 更新之前运行，因此，模板引用还没有持有对元素的引用。
+        console.log(root.value) // => <div>This is a root element</div>
+      }, {
+        flush: 'post'
+      })
+
+      return {
+        root
+      }
+    }
+  }
+</script>
+```
+
+## 指令
+
+### 动态指令
+
+```html
+<div id="dynamic-arguments-example" class="demo">
+  <p>Scroll down the page</p>
+  <p v-pin="200">Stick me 200px from the top of the page</p>
+</div>
+<script>
+  const app = Vue.createApp({})
+
+app.directive('pin', {
+  mounted(el, binding) {
+    el.style.position = 'fixed'
+    // binding.value 是我们传递给指令的值——在这里是 200
+    el.style.top = binding.value + 'px'
+  }
+})
+
+app.mount('#dynamic-arguments-example')
+</script>
+<!-- 2 -->
+<div id="dynamicexample">
+  <h3>Scroll down inside this section ↓</h3>
+  <p v-pin:[direction]="200">I am pinned onto the page at 200px to the left.</p>
+</div>
+<script>
+export default {
+  const app = Vue.createApp({
+  data() {
+    return {
+      direction: 'right'
+    }
+  }
+})
+
+app.directive('pin', {
+  mounted(el, binding) {
+    el.style.position = 'fixed'
+    // binding.arg 是我们传递给指令的参数
+    const s = binding.arg || 'top'
+    el.style[s] = binding.value + 'px'
+  }
+})
+
+app.mount('#dynamic-arguments-example')
+}
+</script>>
+```
+
+### 函数简写
+
+```ts
+app.directive('pin', (el, binding) => {
+  el.style.position = 'fixed'
+  const s = binding.arg || 'top'
+  el.style[s] = binding.value + 'px'
+})
+```
+
+### 对象字面量
+
+```html
+<div v-demo="{ color: 'white', text: 'hello!' }"></div>
+```
+
+```ts
+app.directive('demo', (el, binding) => {
+  console.log(binding.value.color) // => "white"
+  console.log(binding.value.text) // => "hello!"
+})
+```
+
+### 在组件中使用
+
+```html
+<my-component v-demo="test"></my-component>
+```
+
+```ts
+app.component('my-component', {
+  template: `
+    <div> // v-demo 指令将会被应用在这里
+      <span>My component content</span>
+    </div>
+  `
+})
+```
 
 ## vue-loader
 
