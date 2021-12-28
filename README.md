@@ -206,21 +206,58 @@ Vue 的过渡系统提供了非常多简单的方法来设置进入、离开和�
 SVG 节点的位置
 元素的大小和其他的 property
 
+## toRefs
+
+```ts
+/* 使用 `toRefs` 创建对 `props` 中的 `user` property 的响应式引用 */
+const { user } = toRefs(props);
+```
+
+## computed
+
+为了访问新创建的计算变量的 value，我们需要像 ref 一样使用 .value property
+
+```ts
+import { ref, computed } from 'vue'
+
+const counter = ref(0)
+const twiceTheCounter = computed(() => counter.value * 2)
+
+counter.value++
+console.log(counter.value) // 1
+console.log(twiceTheCounter.value) // 2
+```
+
+## composables 组合物 demo 组合式函数
+
+```ts
+// src/composables/useUserRepositories.js
+
+import { fetchUserRepositories } from '@/api/repositories'
+import { ref, onMounted, watch } from 'vue'
+
+export default function useUserRepositories(user) {
+  const repositories = ref([])
+  const getUserRepositories = async () => {
+    repositories.value = await fetchUserRepositories(user.value)
+  }
+
+  onMounted(getUserRepositories)
+  watch(user, getUserRepositories)
+
+  return {
+    repositories,
+    getUserRepositories
+  }
+}
+```
+
+## Setup
+
 ```ts
 
 ```
 
-```ts
-
-```
-
-```ts
-
-```
-
-```ts
-
-```
 ## vue-loader
 
 当使用 vue-loader 时，*.vue 文件中的模板会在构建时预编译为 JavaScript，在最终的捆绑包中并不需要编译器，因此可以只使用运行时构建版本
@@ -234,9 +271,9 @@ SVG 节点的位置
 `command + shift + P` : 打开 VSCode command palette
 `command + m`: 打开Vue文件的split
 
-## SFC <script setup>
+## SFC `<script setup>`
 
-https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
+[https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup)
 
 
 ## Recommended IDE Setup

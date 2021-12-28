@@ -3,11 +3,13 @@ import { ref, onMounted, watch } from 'vue';
 import HelloWorld from './components/HelloWorld.vue'
 
 let counter = ref(1);
+let counter2 = ref(1);
 let name = ref('lys');
 
 onMounted(() => {
   setInterval(() => {
     counter.value += 1;
+    counter2.value += 1;
   }, 1000)
 });
 const changeName = () => {
@@ -15,6 +17,9 @@ const changeName = () => {
 }
 watch(counter, (newVal, prevVal) => {
   console.log('12312', newVal);
+});
+watch(counter2, (newVal, prevVal) => {
+  console.log('counter2', newVal);
 });
 </script>
 
