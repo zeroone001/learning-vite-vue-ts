@@ -304,6 +304,12 @@ setup(props) {
 
 [https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup)
 
+## 删除的API
+
+`$on $off $once`
+
+移除了一些特性 filter，内联模板
+
 
 ## Recommended IDE Setup
 
