@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import HelloWorld from './components/HelloWorld.vue'
 
 let counter = ref(1);
@@ -13,6 +13,9 @@ onMounted(() => {
 const changeName = () => {
   name.value = 'ad';
 }
+watch(counter, (newVal, prevVal) => {
+  console.log('12312', newVal);
+});
 </script>
 
 <template>
