@@ -712,6 +712,52 @@ app.component('anchored-heading', {
 })
 ```
 
+### 虚拟DOM树
+
+```html
+<h1>{{ blogTitle }}</h1>
+```
+
+```ts
+return h('h1', {}, this.blogTitle);
+```
+
+### 约束
+
+```ts
+/* 下面两个是一样的 */
+Array.from({length: 20})
+new Array(20).fill()
+
+render() {
+  return h('div',
+    Array.from({ length: 20 }).map(() => {
+      return h('p', 'hi')
+    })
+  )
+}
+```
+
+### Vue 中使用 JSX 语法
+
+https://github.com/vuejs/jsx-next
+
+```ts
+import AnchoredHeading from './AnchoredHeading.vue'
+
+const app = createApp({
+  render() {
+    return (
+      <AnchoredHeading level={1}>
+        <span>Hello</span> world!
+      </AnchoredHeading>
+    )
+  }
+})
+
+app.mount('#demo')
+```
+
 ## vue-loader
 
 当使用 vue-loader 时，*.vue 文件中的模板会在构建时预编译为 JavaScript，在最终的捆绑包中并不需要编译器，因此可以只使用运行时构建版本
