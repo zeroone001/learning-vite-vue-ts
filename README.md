@@ -640,6 +640,78 @@ app.component('my-component', {
 })
 ```
 
+## teleport
+
+一旦我们按钮打开模态框，Vue将正确的把模态框渲染为body元素的子级
+
+```ts
+app.component('modal-button', {
+  template: `
+    <button @click="modalOpen = true">
+        Open full screen modal! (With teleport!)
+    </button>
+
+    <teleport to="body">
+      <div v-if="modalOpen" class="modal">
+        <div>
+          I'm a teleported modal! 
+          (My parent is "body")
+          <button @click="modalOpen = false">
+            Close
+          </button>
+        </div>
+      </div>
+    </teleport>
+  `,
+  data() {
+    return { 
+      modalOpen: false
+    }
+  }
+})
+```
+
+### 在同一目标上使用多个 teleport
+
+```html
+<teleport to="#modals">
+  <div>A</div>
+</teleport>
+<teleport to="#modals">
+  <div>B</div>
+</teleport>
+
+<!-- result-->
+<div id="modals">
+  <div>A</div>
+  <div>B</div>
+</div>
+```
+
+## 渲染函数
+
+```ts
+const { createApp, h } = Vue
+
+const app = createApp({})
+
+app.component('anchored-heading', {
+  render() {
+    return h(
+      'h' + this.level, // 标签名
+      {}, // prop 或 attribute
+      this.$slots.default() // 包含其子节点的数组
+    )
+  },
+  props: {
+    level: {
+      type: Number,
+      required: true
+    }
+  }
+})
+```
+
 ## vue-loader
 
 当使用 vue-loader 时，*.vue 文件中的模板会在构建时预编译为 JavaScript，在最终的捆绑包中并不需要编译器，因此可以只使用运行时构建版本
