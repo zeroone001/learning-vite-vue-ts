@@ -758,6 +758,92 @@ const app = createApp({
 app.mount('#demo')
 ```
 
+## Vue 与 Web Components
+
+### defineCustomElement
+
+Vue 支持使用 defineCustomElement 方法创建自定义元素，并且使用与 Vue 组件完全一致的 API。该方法接受与 defineComponent 相同的参数，但是会返回一个扩展自 HTMLElement 的自定义元素构造函数：
+
+```ts
+import { defineCustomElement } from 'vue'
+
+const MyVueElement = defineCustomElement({
+  // 在此提供正常的 Vue 组件选项
+  props: {},
+  emits: {},
+  template: `...`,
+
+  // defineCustomElement 独有特性: CSS 会被注入到隐式根 (shadow root) 中
+  styles: [`/* inlined css */`]
+})
+
+// 注册自定义元素
+// 注册完成后，此页面上的所有的 `<my-vue-element>` 标签会被更新
+customElements.define('my-vue-element', MyVueElement)
+
+// 你也可以编程式地实例化这个元素：
+// (只能在注册后完成此操作)
+document.body.appendChild(
+  new MyVueElement({
+    // initial props (optional)
+  })
+)
+```
+
+## 深入响应性原理
+
+当 ref 作为响应式对象的 property 被访问或更改时，为使其行为类似于普通 property，它会自动解包内部值：
+
+```ts
+const count = ref(0)
+const state = reactive({
+  count
+})
+
+console.log(state.count) // 0
+
+state.count = 1
+console.log(count.value) // 1
+```
+
+
+### 解构赋值
+
+```ts
+import { reactive } from 'vue'
+
+const book = reactive({
+  author: 'Vue Team',
+  year: '2020',
+  title: 'Vue 3 Guide',
+  description: 'You are reading this book right now ;)',
+  price: 'free'
+})
+
+let { author, title } = toRefs(book)
+
+title.value = 'Vue 3 Detailed Guide' // 我们需要使用 .value 作为标题，现在是 ref
+console.log(book.title) // 'Vue 3 Detailed Guide'
+```
+
+### readonly
+
+```ts
+import { reactive, readonly } from 'vue'
+
+const original = reactive({ count: 0 })
+
+const copy = readonly(original)
+
+// 通过 original 修改 count，将会触发依赖 copy 的侦听器
+
+original.count++
+
+// 通过 copy 修改 count，将导致失败并出现警告
+copy.count++ // 警告: "Set operation on key 'count' failed: target is readonly."
+```
+
+
 ## vue-loader
 
 当使用 vue-loader 时，*.vue 文件中的模板会在构建时预编译为 JavaScript，在最终的捆绑包中并不需要编译器，因此可以只使用运行时构建版本
