@@ -847,10 +847,189 @@ copy.count++ // 警告: "Set operation on key 'count' failed: target is readonly
 
 Vue SFC 是框架指定的文件格式，必须由 @vue/compiler-sfc 预编译为标准的 JavaScript 与 CSS。编译后的 SFC 是一个标准的 JavaScript（ES）模块——这意味着通过正确的构建配置，可以像模块一样导入 SFC
 
-```ts
+### 定义 Vue 组件
 
+```ts
+import { defineComponent } from 'vue'
+
+const Component = defineComponent({
+  // 已启用类型推断
+})
+/* SFC */
+import { defineComponent } from 'vue'
+export default defineComponent({
+  // 已启用类型推断
+})
 ```
 
+### type Assertion
+
+```ts
+interface Book {
+  title: string
+  author: string
+  year: number
+}
+
+const Component = defineComponent({
+  data() {
+    return {
+      book: {
+        title: 'Vue 3 Guide',
+        author: 'Vue Team',
+        year: 2020
+      } as Book
+    }
+  }
+})
+```
+### 为 globalProperties 扩充类型
+
+```ts
+// 用户定义
+import axios from 'axios'
+const app = Vue.createApp({})
+app.config.globalProperties.$http = axios
+// 验证数据的插件
+export default {
+  install(app, options) {
+    app.config.globalProperties.$validate = (data: object, rule: object) => {
+      // 检查对象是否合规
+    }
+  }
+}
+```
+
+### 类型声明
+
+```ts
+import axios from 'axios'
+declare module '@vue/runtime-core' {
+  export interface ComponentCustomProperties {
+    $http: typeof axios
+    $validate: (data: object, rule: object) => boolean
+  }
+}
+```
+
+### 注解返回类型
+
+```ts
+import { defineComponent } from 'vue'
+
+const Component = defineComponent({
+  data() {
+    return {
+      message: 'Hello!'
+    }
+  },
+  computed: {
+    // 需要注解
+    greeting(): string {
+      return this.message + '!'
+    },
+
+    // 在使用 setter 进行计算时，需要对 getter 进行注解
+    greetingUppercased: {
+      get(): string {
+        return this.greeting.toUpperCase()
+      },
+      set(newValue: string) {
+        this.message = newValue.toUpperCase()
+      }
+    }
+  }
+})
+```
+
+### 注解 Props
+
+Vue 对定义了 type 的 prop 执行运行时验证。要将这些类型提供给 TypeScript，我们需要使用 PropType 指明构造函数：
+
+```ts
+import {defineComponent, PropType} from 'vue';
+
+interface Book {
+  title: string
+  author: string
+  year: number
+}
+
+const Component = defineComponent({
+  props: {
+    name: String,
+    id: [Number, String],
+    success: { type: String },
+    callback: {
+      type: Function as PropType<() => void>
+    },
+    book: {
+      type: Object as PropType<Book>,
+      required: true
+    },
+    metadata: {
+      type: null // metadata 的类型是 any
+    }
+  }
+})
+```
+
+validator 和 default
+
+```ts
+import { defineComponent, PropType } from 'vue'
+
+interface Book {
+  title: string
+  year?: number
+}
+
+const Component = defineComponent({
+  props: {
+    bookA: {
+      type: Object as PropType<Book>,
+      // 请务必使用箭头函数
+      default: () => ({
+        title: 'Arrow Function Expression'
+      }),
+      validator: (book: Book) => !!book.title
+    },
+    bookB: {
+      type: Object as PropType<Book>,
+      // 或者提供一个明确的 this 参数
+      default(this: void) {
+        return {
+          title: 'Function Expression'
+        }
+      },
+      validator(this: void, book: Book) {
+        return !!book.title
+      }
+    }
+  }
+})
+```
+
+### 注解 emit
+
+```ts
+const Component = defineComponent({
+  emits: {
+    addBook(payload: { bookName: string }) {
+      // perform runtime 验证
+      return payload.bookName.length > 0
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$emit('addBook', {
+        bookName: 123 // 类型错误！
+      })
+      this.$emit('non-declared-event') // 类型错误！
+    }
+  }
+})
+```
 
 ## vue-loader
 
