@@ -843,6 +843,14 @@ original.count++
 copy.count++ // 警告: "Set operation on key 'count' failed: target is readonly."
 ```
 
+## SFC 单文件组件
+
+Vue SFC 是框架指定的文件格式，必须由 @vue/compiler-sfc 预编译为标准的 JavaScript 与 CSS。编译后的 SFC 是一个标准的 JavaScript（ES）模块——这意味着通过正确的构建配置，可以像模块一样导入 SFC
+
+```ts
+
+```
+
 
 ## vue-loader
 
