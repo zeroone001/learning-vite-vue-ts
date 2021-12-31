@@ -1031,6 +1031,122 @@ const Component = defineComponent({
 })
 ```
 
+### 与组合式 API 一起使用
+
+在 setup() 函数中，不需要将类型传递给 props 参数，因为它将从 props 组件选项推断类型。
+
+
+
+```ts
+import { defineComponent } from 'vue'
+
+const Component = defineComponent({
+  props: {
+    message: {
+      type: String,
+      required: true
+    }
+  },
+
+  setup(props) {
+    const result = props.message.split('') // 正确, 'message' 被声明为字符串
+    const filtered = props.message.filter(p => p.value) // 将引发错误: Property 'filter' does not exist on type 'string'
+  }
+})
+```
+
+### refs
+
+如果泛型的类型未知，建议将 ref 转换为 Ref<T>。
+
+```ts
+const year = ref<string | number>(2020);
+year.value = '2020';
+
+```
+
+### 为模板引用定义类型
+
+```ts
+import { defineComponent, ref } from 'vue'
+const MyModal = defineComponent({
+  setup() {
+    const isContentShown = ref(false)
+    const open = () => (isContentShown.value = true)
+    return {
+      isContentShown,
+      open
+    }
+  }
+})
+const app = defineComponent({
+  components: {
+    MyModal
+  },
+  template: `
+    <button @click="openModal">Open from parent</button>
+    <my-modal ref="modal" />
+  `,
+  setup() {
+    /* 这里要跟 ref="modal" 一样的 */
+    const modal = ref<InstanceType<typeof MyModal>>()
+    const openModal = () => {
+      /* 可选链 */
+      modal.value?.open()
+    }
+    return { modal, openModal }
+  }
+})
+```
+
+### 类型声明 reactive
+
+```ts
+import { defineComponent, reactive } from 'vue'
+
+interface Book {
+  title: string
+  year?: number
+}
+
+export default defineComponent({
+  name: 'HelloWorld',
+  setup() {
+    const book = reactive<Book>({ title: 'Vue 3 Guide' })
+    // or
+    const book: Book = reactive({ title: 'Vue 3 Guide' })
+    // or
+    const book = reactive({ title: 'Vue 3 Guide' }) as Book
+  }
+})
+```
+
+### 类型声明 computed
+
+计算值将根据返回值自动推断类型，自动推断，所以不需要添加
+
+### 为事件处理器添加类型
+
+```ts
+<template>
+  <input type="text" @change="handleChange" />
+</template>
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+  setup() {
+    // `evt` 将会是 `any` 类型
+    const handleChange = (evt: Event) => {
+      console.log((evt.target as HTMLInputElement).value) // 此处 TS 将抛出异常
+    }
+    return { handleChange }
+  }
+})
+</script>
+```
+
+
+
 ## vue-loader
 
 当使用 vue-loader 时，*.vue 文件中的模板会在构建时预编译为 JavaScript，在最终的捆绑包中并不需要编译器，因此可以只使用运行时构建版本
