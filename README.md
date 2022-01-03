@@ -1393,3 +1393,65 @@ export default {
 }
 </style>
 ```
+
+# 选项
+
+## emits
+
+emits 可以是数组或对象，从组件触发自定义事件，emits 可以是简单的数组，也可以是对象，后者允许配置事件验证。
+
+emits 选项中列出的事件不会从组件的根元素继承，也将从 $attrs property 中移除。
+
+## 声明周期钩子
+
+### renderTracked
+
+跟踪虚拟 DOM 重新渲染时调用。钩子接收 debugger event 作为参数。此事件告诉你哪个操作跟踪了组件以及该操作的目标对象和键。
+
+
+### renderTriggered
+
+当虚拟 DOM 重新渲染被触发时调用。和 renderTracked 类似，接收 debugger event 作为参数。此事件告诉你是什么操作触发了重新渲染，以及该操作的目标对象和键。
+
+## 组合
+
+1. mixins
+2. extends 允许一个组件扩展到另一个组件，且继承该组件选项。
+
+从实现的角度看，extends 几乎等同于 mixins。可以认为其作为第一个 mixin 作用在被 extends 的组件上。
+
+然而，extends 和 mixins 表达了不同的意图。mixins 选项主要用来组合功能，而 extends 主要用来考虑继承性。
+
+```ts
+const CompA = { ... }
+
+const CompB = {
+  extends: CompA,
+  ...
+}
+```
+
+## setup
+
+在创建组件实例时，在初始 prop 解析之后立即调用 setup。在生命周期方面，它是在 beforeCreate 钩子之前调用的。
+
+## 指令
+
+### v-once
+
+只渲染元素和组件一次。随后的重新渲染，元素/组件及其所有的子节点将被视为静态内容并跳过。这可以用于优化更新性能。
+
+### v-pre
+
+跳过这个元素和它的子元素的编译过程。可以用来显示原始 Mustache 标签。跳过大量没有指令的节点会加快编译。
+
+### v-memo
+
+v-memo 仅供性能敏感场景的针对性优化，会用到的场景应该很少。渲染 v-for 长列表 (长度大于 1000) 可能是它最有用的场景：
+
+```html
+<div v-for="item in list" :key="item.id" v-memo="[item.id === selected]">
+  <p>ID: {{ item.id }} - selected: {{ item.id === selected }}</p>
+  <p>...more child nodes</p>
+</div>
+```
