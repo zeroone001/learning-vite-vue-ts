@@ -1150,7 +1150,6 @@ export default defineComponent({
 ## vue-loader
 
 当使用 vue-loader 时，*.vue 文件中的模板会在构建时预编译为 JavaScript，在最终的捆绑包中并不需要编译器，因此可以只使用运行时构建版本
-
 ## swiper
 
 [swiper@6](https://swiperjs.com/vue)
@@ -1175,6 +1174,68 @@ export default defineComponent({
 
 - [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
 
-## Type Support For `.vue` Imports in TS
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's `.vue` type support plugin by running `Volar: Switch TS Plugin on/off` from VSCode command palette.
+# 应用API
+
+## component
+
+注册或者检索全局组件
+
+```ts
+import { createApp } from 'vue'
+
+const app = createApp({})
+
+// 注册一个名为my-component的组件
+app.component('my-component', {
+  /* ... */
+})
+
+// 检索注册的组件(始终返回构造函数)
+const MyComponent = app.component('my-component')
+```
+
+## config
+
+```js
+import { createApp } from 'vue'
+const app = createApp({})
+
+app.config = {...}
+```
+
+## directive
+
+注册全局指令
+
+```js
+import { createApp } from 'vue'
+const app = createApp({})
+
+// 注册
+app.directive('my-directive', {
+  // 指令是具有一组生命周期的钩子：
+  // 在绑定元素的 attribute 或事件监听器被应用之前调用
+  created() {},
+  // 在绑定元素的父组件挂载之前调用
+  beforeMount() {},
+  // 绑定元素的父组件被挂载时调用
+  mounted() {},
+  // 在包含组件的 VNode 更新之前调用
+  beforeUpdate() {},
+  // 在包含组件的 VNode 及其子组件的 VNode 更新之后调用
+  updated() {},
+  // 在绑定元素的父组件卸载之前调用
+  beforeUnmount() {},
+  // 卸载绑定元素的父组件时调用
+  unmounted() {}
+})
+
+// 注册 (功能指令)
+app.directive('my-directive', () => {
+  // 这将被作为 `mounted` 和 `updated` 调用
+})
+
+// getter, 如果已注册，则返回指令定义
+const myDirective = app.directive('my-directive')
+```
