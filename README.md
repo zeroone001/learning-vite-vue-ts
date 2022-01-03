@@ -1220,7 +1220,9 @@ app.directive('my-directive', {
   // 在绑定元素的父组件挂载之前调用
   beforeMount() {},
   // 绑定元素的父组件被挂载时调用
-  mounted() {},
+  mounted(el) {
+    // el 直接操作DOM
+  },
   // 在包含组件的 VNode 更新之前调用
   beforeUpdate() {},
   // 在包含组件的 VNode 及其子组件的 VNode 更新之后调用
@@ -1232,10 +1234,162 @@ app.directive('my-directive', {
 })
 
 // 注册 (功能指令)
+/* 重点 */
 app.directive('my-directive', () => {
   // 这将被作为 `mounted` 和 `updated` 调用
 })
 
 // getter, 如果已注册，则返回指令定义
 const myDirective = app.directive('my-directive')
+```
+
+## use 
+
+```js
+import { createApp } from 'vue'
+import MyPlugin from './plugins/MyPlugin'
+
+const app = createApp({})
+
+app.use(MyPlugin)
+app.mount('#app')
+```
+
+# 全局API
+
+## createApp 
+
+```ts
+import { createApp, h, nextTick } from 'vue'
+const app = createApp({})
+```
+
+## defineComponent
+
+```ts
+import { defineComponent } from 'vue'
+
+const MyComponent = defineComponent({
+  data() {
+    return { count: 1 }
+  },
+  methods: {
+    increment() {
+      this.count++
+    }
+  }
+})
+
+```
+
+## defineAsyncComponent
+
+创建 一个只有在需要的时候，才会加载的异步组件
+
+```ts
+import { defineAsyncComponent } from 'vue'
+
+const AsyncComp = defineAsyncComponent(() =>
+  import('./components/AsyncComponent.vue')
+)
+
+app.component('async-component', AsyncComp)
+
+/* 2 */
+import { createApp, defineAsyncComponent } from 'vue'
+
+createApp({
+  // ...
+  components: {
+    AsyncComponent: defineAsyncComponent(() =>
+      import('./components/AsyncComponent.vue')
+    )
+  }
+})
+```
+
+## defineCustomElement
+
+```ts
+import { defineCustomElement } from 'vue'
+const MyVueElement = defineCustomElement({
+  // 这里是普通的 Vue 组件选项
+  props: {},
+  emits: {},
+  template: `...`,
+  // 只用于 defineCustomElement：注入到 shadow root 中的 CSS
+  styles: [`/* inlined css */`]
+})
+// 注册该自定义元素。
+// 注册过后，页面上所有的 `<my-vue-element>` 标记会被升级。
+customElements.define('my-vue-element', MyVueElement)
+// 你也可以用编程的方式初始化这个元素：
+// (在注册之后才可以这样做)
+document.body.appendChild(
+  new MyVueElement({
+    // 初始化的 prop (可选)
+  })
+)
+```
+
+## resolveComponent 
+
+如果在当前应用实例中可用，则允许按名称解析 component。
+返回一个 Component。如果没有找到，则返回接收的参数 name。
+
+resolveComponent 只能在 render 或 setup 函数中使用。
+
+
+```ts
+import { resolveComponent } from 'vue'
+render() {
+  const MyComponent = resolveComponent('MyComponent')
+}
+```
+
+## nextTick
+
+将回调推迟到下一个 DOM 更新周期之后执行。在更改了一些数据以等待 DOM 更新后立即使用它
+
+```ts
+import { createApp, nextTick } from 'vue'
+
+const app = createApp({
+  setup() {
+    const message = ref('Hello!')
+    const changeMessage = async newMessage => {
+      message.value = newMessage
+      await nextTick()
+      console.log('Now DOM is updated')
+    }
+  }
+})
+```
+
+## useCssModule
+
+useCssModule 只能在render或者setup 中使用 
+
+```html
+<script>
+import { h, useCssModule } from 'vue'
+export default {
+  setup() {
+    const style = useCssModule()
+    return () =>
+      h(
+        'div',
+        {
+          class: style.success
+        },
+        'Task complete!'
+      )
+  }
+}
+</script>
+<style module>
+.success {
+  color: #090;
+}
+</style>
 ```
