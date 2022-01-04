@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, reactive, onBeforeUpdate } from 'vue';
+import { ref, onMounted, watch, reactive, onBeforeUpdate, defineProps } from 'vue';
 import HelloWorld from './components/HelloWorld.vue'
 
 let counter = ref(1);

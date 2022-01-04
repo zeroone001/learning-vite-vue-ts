@@ -1455,3 +1455,245 @@ v-memo 仅供性能敏感场景的针对性优化，会用到的场景应该很�
   <p>...more child nodes</p>
 </div>
 ```
+
+### is
+
+```html
+<!-- 当 currentView 改变时组件就改变 -->
+<component :is="currentView"></component>
+```
+
+```html
+<table>
+  <tr is="vue:my-row-component"></tr>
+</table>
+```
+
+# 单文件组件
+
+* 更少的样板内容，更简洁的代码。
+* 能够使用纯 Typescript 声明 props 和抛出事件。
+* 更好的运行时性能 (其模板会被编译成与其同一作用域的渲染函数，没有任何的中间代理)。
+* 更好的 IDE 类型推断性能 (减少语言服务器从代码中抽离类型的工作)
+
+## `<script setup>`
+
+每个 *.vue 文件最多可同时包含一个 <script setup> 块 (不包括常规的 <script>)
+
+该脚本会被预处理并作为组件的 setup() 函数使用，也就是说它会在每个组件实例中执行。`<script setup>` 的顶层绑定会自动暴露给模板。更多详情请查看 `<script setup>` 文档。
+
+1. 每次组件实例被创建的时候执行
+2. 顶层的绑定会被暴露给模板
+3. import 导入的内容也会以同样的方式暴露
+4. 使用组件，<script setup> 范围里的值也能被直接作为自定义组件的标签名使用
+5. 动态组件，由于组件被引用为变量而不是作为字符串键来注册的，在 <script setup> 中要使用动态组件的时候，就应该使用动态的 `:is` 来绑定
+
+
+
+```html
+<script setup>
+import { capitalize } from './helpers'
+</script>
+
+<template>
+  <div>{{ capitalize('hello') }}</div>
+</template>
+
+<script setup>
+import MyComponent from './MyComponent.vue'
+</script>
+<!-- 强烈建议使用 PascalCase 格式以保持一致性 -->
+<template>
+  <MyComponent />
+</template>
+
+<script setup>
+import Foo from './Foo.vue'
+import Bar from './Bar.vue'
+</script>
+
+<template>
+  <component :is="Foo" />
+  <component :is="someCondition ? Foo : Bar" />
+</template>
+```
+
+## 命名空间组件
+
+```html
+<script setup>
+import * as Form from './form-components'
+</script>
+
+<template>
+  <Form.Input>
+    <Form.Label>label</Form.Label>
+  </Form.Input>
+</template>
+```
+
+## 使用自定义指令
+
+但这里有一个需要注意的限制：必须以 vNameOfDirective 的形式来命名本地自定义指令，以使得它们可以直接在模板中使用。
+
+```html
+<script setup>
+  /* 注意这里的命名 */
+const vMyDirective = {
+  beforeMount: (el) => {
+    // 在元素上做些操作
+  }
+}
+</script>
+<template>
+  <h1 v-my-directive>This is a Heading</h1>
+</template>
+```
+
+## defineProps & defineEmits
+
+在 <script setup> 中必须使用 defineProps 和 defineEmits API 来声明 props 和 emits
+
+```html
+<script setup>
+const props = defineProps({
+  foo: String
+});
+
+const emit = defineEmits(['change']);
+</script>
+```
+
+## defineExpose
+
+```html
+<script setup>
+import { ref } from 'vue'
+
+const a = 1
+const b = ref(2)
+
+defineExpose({
+  a,
+  b
+})
+</script>
+```
+
+## useSlots 和 useAttrs
+
+```html
+<script setup>
+import { useSlots, useAttrs } from 'vue'
+
+const slots = useSlots()
+const attrs = useAttrs()
+</script>
+```
+
+## 顶层 await
+
+`<script setup>` 中可以使用顶层 await。结果代码会被编译成 async setup()：
+
+async setup() 必须与 Suspense 组合使用
+
+```html
+<script setup>
+const post = await fetch(`/api/post/1`).then(r => r.json())
+</script>
+```
+
+## 限制：没有 Src 导入
+
+
+# 单文件组件样式特性
+
+
+## `<style module>`
+
+`<style module>` 标签会被编译为 CSS Modules 并且将生成的 CSS 类作为 $style 对象的键暴露给组件：
+
+
+```html
+<template>
+  <p :class="$style.red">
+    This should be red
+  </p>
+</template>
+
+<style module>
+.red {
+  color: red;
+}
+</style>
+
+<!-- 2 -->
+<template>
+  <p :class="classes.red">red</p>
+</template>
+
+<style module="classes">
+.red {
+  color: red;
+}
+</style>
+```
+
+## 与组合式 API 一同使用
+
+```js
+// 默认, 返回 <style module> 中的类
+useCssModule()
+
+// 命名, 返回 <style module="classes"> 中的类
+useCssModule('classes')
+```
+
+## 状态驱动的动态 CSS
+
+```html
+<template>
+  <div class="text">hello</div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      color: 'red'
+    }
+  }
+}
+</script>
+
+<style>
+.text {
+  color: v-bind(color);
+}
+</style>
+<!-- 2 -->
+<script setup>
+const theme = {
+  color: 'red'
+}
+</script>
+
+<template>
+  <p>hello</p>
+</template>
+
+<style scoped>
+p {
+  color: v-bind('theme.color');
+}
+</style>
+```
+
+## ref
+
+```ts
+function useState<State extends string>(initial: State) {
+  const state = ref(initial) as Ref<State> // state.value -> State extends string
+  return state
+}
+```
