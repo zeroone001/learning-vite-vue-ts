@@ -1,30 +1,36 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, reactive, onBeforeUpdate, defineProps } from 'vue';
 import HelloWorld from './components/HelloWorld.vue'
+import { useMouse } from '@vueuse/core';
 
 let counter = ref(1);
 let counter2 = ref(1);
 let name = ref('lys');
 const list = reactive([1, 2, 3])
 const divs = ref([])
+const { x, y } = useMouse();
+
+
 
 onMounted(() => {
-  setInterval(() => {
-    counter.value += 1;
-    counter2.value += 1;
-  }, 1000)
-  console.log('divs.value', divs.value[0]);
-  
+  // setInterval(() => {
+  //   counter.value += 1;
+  //   counter2.value += 1;
+  // }, 1000)
 });
 const changeName = () => {
   name.value = 'ad';
 }
+
 watch(counter, (newVal, prevVal) => {
   console.log('12312', newVal);
 });
 watch(counter2, (newVal, prevVal) => {
   console.log('counter2', newVal);
+  console.log('x,y', x.value, y.value);
+
 });
+
 onBeforeUpdate(() => {
         divs.value = []
       })
