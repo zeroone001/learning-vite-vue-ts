@@ -2,7 +2,8 @@
 import { ref, onMounted, watch, reactive, onBeforeUpdate, defineProps } from 'vue';
 import HelloWorld from './components/HelloWorld.vue'
 import { useMouse } from '@vueuse/core';
-
+import { storeToRefs } from 'pinia'
+import { useCounterStore } from '@/stores/counter';
 let counter = ref(1);
 let counter2 = ref(1);
 let name = ref('lys');
@@ -10,7 +11,11 @@ const list = reactive([1, 2, 3])
 const divs = ref([])
 const { x, y } = useMouse();
 
+/* store */
+const myCounters = useCounterStore();
+const { thisCounter, doubleCounter } = storeToRefs(myCounters);
 
+const addCounters = myCounters.addCounters;
 
 onMounted(() => {
   // setInterval(() => {
@@ -43,13 +48,8 @@ onBeforeUpdate(() => {
     <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
     <div id="counter">Counter: {{ counter }}</div>
     <div @click="changeName">{{ name }}</div>
+    <div @click="addCounters">{{ thisCounter }}+{{doubleCounter}}</div>
   </div>
-  <div>
-    <div v-for="(item, i) in list" :ref="el => { if (el) divs[i] = el }" :key="i">
-    {{ item }}
-  </div>
-  </div>
-   
 </template>
 
 <style>

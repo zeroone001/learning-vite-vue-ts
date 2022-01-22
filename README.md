@@ -6,6 +6,12 @@
 
 `yarn create vite <project-name> --template vue-ts`
 
+## 需要安装的依赖
+
+```hash
+@types/node
+```
+
 ## 应用 & 组件实例
 
 创建一个应用实例
