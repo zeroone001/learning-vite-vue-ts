@@ -9,6 +9,7 @@
   "dependencies": {
     "@vueuse/core": "^7.5.3",
     "pinia": "^2.0.9",
+    "three": "^0.140.1",
     "vue": "^3.2.25"
   },
   "devDependencies": {
