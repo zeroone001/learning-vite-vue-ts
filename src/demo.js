@@ -14,22 +14,23 @@ export const demoFun = () => {
      var scene = new THREE.Scene();
 
      /**
-     * 创建网格模型
+     * 1. 创建网格模型
      */
     // var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
-    var geometry = new THREE.BoxGeometry(50, 100, 100); //创建一个立方体几何对象Geometry
+    var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
 
     // 材质对象Material
     var material = new THREE.MeshLambertMaterial({
       color: 'red'
     }); 
-
-    var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+    //网格模型对象Mesh
+    var mesh = new THREE.Mesh(geometry, material); 
 
     scene.add(mesh);
 
+
     /**
-     * 光源设置
+     * 2. 光源设置
      */
     // 点光源
     var point = new THREE.PointLight(0xffffff);
@@ -57,7 +58,7 @@ export const demoFun = () => {
      /**
      * 创建渲染器对象
      */
-    const canvas = document.querySelector('#three')
+    const canvas = document.querySelector('#three');
     var renderer = new THREE.WebGLRenderer({
         canvas
     });
