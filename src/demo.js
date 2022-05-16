@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {
     GLTFLoader
 } from 'three/examples/jsm/loaders/GLTFLoader.js';
-
+/* 鼠标操作三维场景 */
 import {
     OrbitControls
 } from 'three/examples/jsm/controls/OrbitControls';
@@ -16,9 +16,10 @@ export const demoFun = () => {
      /**
      * 1. 创建网格模型
      */
+    // SphereGeometry(radius, widthSegments, heightSegments) radius 是球的大小
     // var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
-    var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
-
+    // var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
+    var geometry = new THREE.DodecahedronGeometry(50);
     // 材质对象Material
     var material = new THREE.MeshLambertMaterial({
       color: 'red'
@@ -73,12 +74,19 @@ export const demoFun = () => {
     // 给它加点阻尼感，更真实点
     controls.enableDamping = true;
 
+    let T0 = new Date();//上次时间
+
+
     function animate() {
         controls.update();
 
-        renderer.render(scene, camera);
+        let T1 = new Date();// 本次时间
+        let t = T1-T0;// 时间差
+        T0 = T1;//把本次时间赋值给上次时间
         requestAnimationFrame(animate);
-
+        renderer.render(scene, camera);
+        //每次绕y轴旋转0.01弧度
+        mesh.rotateY(0.001 * t);
 
         // 添加下面代码
         if (resizeRendererToDisplaySize(renderer)) {
