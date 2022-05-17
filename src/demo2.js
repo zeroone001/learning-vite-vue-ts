@@ -19,12 +19,32 @@ export const demoFun = () => {
     // SphereGeometry(radius, widthSegments, heightSegments) radius 是球的大小
     // var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
     // var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
-
+    // 几何体模型
     var geometry = new THREE.DodecahedronGeometry(50);
 
     // 几何体沿着x轴平移50
     geometry.translate(150, 0, 0);
 
+    // 参数：0, 0圆弧坐标原点x，y  100：圆弧半径    0, 2 * Math.PI：圆弧起始角度
+    // var arc = new THREE.ArcCurve(0, 0, 100, 0, 2 * Math.PI);
+    // // getPoints是基类Curve的方法，返回一个vector2对象作为元素组成的数组
+    // var points = arc.getPoints(50); // 分段数50，返回51个顶点
+    // // setFromPoints方法从points中提取数据改变几何体的顶点属性vertices
+    // geometry.setFromPoints(points);
+
+    // var p1 = new THREE.Vector2(50, 0); //顶点1坐标
+    // var p2 = new THREE.Vector2(0, 70); //顶点2坐标
+    // // 二维直线LineCurve
+    // var LineCurve = new THREE.LineCurve(p1, p2);
+
+    var p1 = new THREE.Vector3(-80, 0, 0);
+var p2 = new THREE.Vector3(-40, 100, 0);
+var p3 = new THREE.Vector3(40, 100, 0);
+var p4 = new THREE.Vector3(80, 0, 0);
+// 三维三次贝赛尔曲线
+var curve = new THREE.CubicBezierCurve3(p1, p2, p3, p4);
+    var pointArr = curve.getPoints(10);
+    geometry.setFromPoints(pointArr);
 
     /* 
         对于three.js而言漫反射、镜面反射分别对应两个构造函数MeshLambertMaterial()、MeshPhongMaterial(),
@@ -37,27 +57,13 @@ export const demoFun = () => {
     //     wireframe: false // 将几何图形渲染为线框。 默认值为false
     // }); 
 
-    // 添加高光效果
-    var sphereMaterial = new THREE.MeshPhongMaterial({
-        color: 0x0000ff,
-        specular: 0x4488ee,
-        shininess: 12,
-        side:THREE.DoubleSide,
-        opacity: 0.5,
-        transparent: true,
-    }); //材质对象
-
-    // 网格模型对象Mesh
-    var mesh = new THREE.Mesh(geometry, sphereMaterial);
-
-    let mesh2 = mesh.clone();
-
-    var group = new THREE.Group();
-
-    group.add(mesh);
-    group.add(mesh2);
-
-    scene.add(group);
+    //材质对象
+    var material = new THREE.LineBasicMaterial({
+        color: 0x000000
+    });
+    //线条模型对象
+    var mesh = new THREE.Line(geometry, material);
+    scene.add(mesh); //线条对象添加到场景中
 
 
     /**
@@ -74,12 +80,12 @@ export const demoFun = () => {
     scene.add(ambient);
 
     // 平行光
-    var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    // 设置光源的方向：通过光源position属性和目标指向对象的position属性计算
-    directionalLight.position.set(80, 100, 50);
-    // 方向光指向对象网格模型mesh2，可以不设置，默认的位置是0,0,0
-    directionalLight.target = mesh2;
-    scene.add(directionalLight);
+    // var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    // // 设置光源的方向：通过光源position属性和目标指向对象的position属性计算
+    // directionalLight.position.set(80, 100, 50);
+    // // 方向光指向对象网格模型mesh2，可以不设置，默认的位置是0,0,0
+    // directionalLight.target = mesh2;
+    // scene.add(directionalLight);
 
     /**
      * 相机设置
