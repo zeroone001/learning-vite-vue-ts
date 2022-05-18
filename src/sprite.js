@@ -8,10 +8,58 @@ import {
 } from 'three/examples/jsm/controls/OrbitControls';
 
 export const demoFun = () => {
+
     /**
      * 创建场景对象Scene
      */
     var scene = new THREE.Scene();
+
+    // 创建一个组表示所有的雨滴
+    var group = new THREE.Group();
+    /**
+     * 精灵创建下雨效果
+     */
+    // 加载雨滴理贴图
+    var textureTree = new THREE.TextureLoader().load("/threejs66rain.png");
+    // 批量创建表示雨滴的精灵模型
+    for (let i = 0; i < 400; i++) {
+        var spriteMaterial = new THREE.SpriteMaterial({
+            map: textureTree, //设置精灵纹理贴图
+        });
+        // 创建精灵模型对象
+        var sprite = new THREE.Sprite(spriteMaterial);
+        scene.add(sprite);
+        // 控制精灵大小,
+        sprite.scale.set(8, 10, 1); //// 只需要设置x、y两个分量就可以
+        var k1 = Math.random() - 0.5;
+        var k2 = Math.random() - 0.5;
+        var k3 = Math.random() - 0.5;
+        // 设置精灵模型位置，在整个空间上上随机分布
+        sprite.position.set(200 * k1, 200 * k3, 200 * k2);
+        group.add(sprite);
+    }
+
+    // 渲染函数
+    function render() {
+        // 每次渲染遍历雨滴群组，刷新频率30~60FPS，两帧时间间隔16.67ms~33.33ms
+        // 每次渲染都会更新雨滴的位置，进而产生动画效果
+        group.children.forEach(sprite => {
+            // 雨滴的y坐标每次减1
+            sprite.position.y -= 1;
+            if (sprite.position.y < 0) {
+                // 如果雨滴落到地面，重置y，从新下落
+                sprite.position.y = 200;
+            }
+        });
+        renderer.render(scene, camera); //执行渲染操作
+        requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
+    }
+
+
+
+
+
+
 
     /**
      * 1. 创建网格模型
@@ -24,7 +72,7 @@ export const demoFun = () => {
 
     // 几何体沿着x轴平移50
     geometry.translate(150, 0, 0);
-    
+
     // TextureLoader创建一个纹理加载器对象，可以加载图片作为几何体纹理
     var textureLoader = new THREE.TextureLoader();
     // 执行load方法，加载纹理贴图成功后，返回一个纹理对象Texture
