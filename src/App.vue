@@ -16,7 +16,7 @@ import { useMouse } from '@vueuse/core';
 import { storeToRefs } from 'pinia'
 import { useCounterStore } from '@/stores/counter';
 // import { demoFun } from "./seraphine.js";
-import { demoFun } from "./sprite.js";
+import { demoFun } from "./webgl_loader_mmd.js";
 
 // renderer
 onMounted(() => {

@@ -18,5 +18,8 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
-    }
+    },
+    "globals": {
+        Ammo: true,
+    },
 };
