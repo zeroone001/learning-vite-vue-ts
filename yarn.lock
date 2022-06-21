@@ -432,6 +432,11 @@
   dependencies:
     "@babel/types" "^7.9.6"
 
+"babylonjs@^5.11.0":
+  "integrity" "sha512-yoCREGy0wAMFjs/XIvtu6az7uE8B/22G0DNm5lC1wwjKLW1EPSvnZks0v+oqc1LZXVNcGWN3xVRhiaX3v+9lGA=="
+  "resolved" "https://registry.npmjs.org/babylonjs/-/babylonjs-5.11.0.tgz"
+  "version" "5.11.0"
+
 "balanced-match@^1.0.0":
   "integrity" "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="
   "resolved" "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz"
