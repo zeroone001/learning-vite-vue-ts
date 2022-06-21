@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- eslint-disable -->
-    <canvas id="three"></canvas>
+    <canvas id="renderCanvas"></canvas>
     <!-- <img alt="Vue logo" src="./assets/logo.png" />
     <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
     <div id="counter">Counter: {{ counter }}</div>
@@ -16,7 +16,8 @@ import { useMouse } from '@vueuse/core';
 import { storeToRefs } from 'pinia'
 import { useCounterStore } from '@/stores/counter';
 // import { demoFun } from "./seraphine.js";
-import { demoFun } from "./webgl_loader_mmd.js";
+// import { demoFun } from "./webgl_loader_mmd.js";
+import { demoFun } from "./BabylonJS";
 
 // renderer
 onMounted(() => {
@@ -99,7 +100,7 @@ onMounted(() => {
   color: #2c3e50;
   margin-top: 60px;
 }
-#three {
+#renderCanvas {
   width: 100%;
   height: 100%;
   position: fixed;
