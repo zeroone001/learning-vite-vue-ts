@@ -17,6 +17,7 @@ import { storeToRefs } from 'pinia'
 import { useCounterStore } from '@/stores/counter';
 // import { demoFun } from "./seraphine.js";
 // import { demoFun } from "./webgl_loader_mmd.js";
+// BabylonJS 机器狗
 import { demoFun } from "./BabylonJS";
 
 // renderer
